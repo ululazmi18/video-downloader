@@ -14,7 +14,6 @@ def reencoding(file_input, file_output):
             "-crf", "18",  # Kualitas tinggi
             "-pix_fmt", "yuv420p",  # Format warna untuk kompatibilitas
             "-c:a", "aac",  # Codec audio AAC
-            "-b:a", "256k",  # Bitrate audio
             file_output  # File output
         ]
 
@@ -45,38 +44,12 @@ def unduh_video():
             print(f"\n\n{info_dict}\n\n")
             
             filename = f"{title}.{ext}"
-            file_path = os.path.join(os.getcwd(), filename)
+            filename1 = f"{title}_Baru.{ext}"
+            os.rename(filename, filename1)
+            reencoding(filename1, filename)
+            os.remove(filename1)
 
-            # Ambil bagian sebelum tanda '#'
-            title = re.split(r'#', title)[0]
-
-            # Ganti spasi dengan garis bawah dan hapus karakter selain huruf, angka, dan garis bawah
-            title = re.sub(r'[^a-zA-Z0-9_]', ' ', title).strip()
-            title = re.sub(r'\s+', '_', title)
-
-            # Pastikan judul tidak kosong
-            if not title:  # Jika judul kosong setelah pemotongan, gunakan 'Video' sebagai fallback
-                title = 'Video'
-
-            filenamebaru = f"{title}_Baru.{ext}"
-
-            # Periksa apakah nama file sudah ada, jika ada tambahkan nomor acak 3 digit
-            if os.path.exists(filenamebaru):
-                random_number = random.randint(100, 999)
-                filenamebaru = f"{title}_Baru_{random_number}.{ext}"
-
-            # Simpan file ke jalur lengkap
-            file_path_baru = os.path.join(os.getcwd(), filenamebaru)
-            
-            os.rename(file_path, file_path_baru)
-            
-            file_output = filenamebaru.replace("_Baru", "").strip()
-            
-            reencoding(filenamebaru, file_output)
-            
-            os.remove(file_path_baru)
-
-            print(f"Video berhasil diunduh dan diproses ulang. Hasil disimpan di: {file_output}")
+            print(f"Video berhasil diunduh dan diproses ulang.")
     except Exception as e:
         print(f"Terjadi kesalahan: {e}")
 
